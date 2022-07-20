@@ -2,8 +2,8 @@ version: '3'
 
 volumes:
   opensearch-node1:
-#  opensearch-node2:
   mysql:
+  hatstall:
 
 networks:
   opensearch-net:
@@ -12,7 +12,7 @@ networks:
 services:
 
   opensearch-node1:
-    image: bitergia/bitergia-analytics-opensearch:latest
+    image: bitergia/bitergia-analytics-opensearch:0.4.0
     container_name: opensearch-node1
     ports:
       - 9200:9200
@@ -35,35 +35,8 @@ services:
     networks:
       - opensearch-net
 
-#  opensearch-node2:
-#    image: bitergia/bitergia-analytics-opensearch:latest
-#    container_name: opensearch-node2
-#    environment:
-#      - cluster.name=opensearch-cluster
-#      - node.name=opensearch-node2
-#      - discovery.seed_hosts=opensearch-node1,opensearch-node2
-#      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2
-#      # along with the memlock settings below, disables swapping
-#      - bootstrap.memory_lock=true 
-#      # this is required to start up on macOS
-#      - bootstrap.system_call_filter=false
-#      # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
-#      - "OPENSEARCH_JAVA_OPTS=-Xms2048m -Xmx2048m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#      nofile:
-#        # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
-#        soft: 65536
-#        hard: 65536
-#    volumes:
-#      - opensearch-node2:/usr/share/opensearch/data
-#    networks:
-#      - opensearch-net
-
   dashboard:
-    image: bitergia/bitergia-analytics-opensearch-dashboards:latest
+    image: bitergia/bitergia-analytics-opensearch-dashboards:0.4.0
     container_name: dashboard
     ports:
       - 5601:5601
@@ -94,7 +67,8 @@ services:
 
   mordred:
     restart: on-failure
-    image: bitergia/mordred:latest
+    image: bitergia/mordred:grimoirelab-0.4.0
+    container_name: mordred
     volumes:
       - ./config/mordred/setup.cfg:/home/bitergia/conf/setup.cfg
       - ./config/mordred/menu.yaml:/home/bitergia/conf/menu.yaml
@@ -104,9 +78,25 @@ services:
       - ./logs/:/home/bitergia/logs
     depends_on:
       - opensearch-node1
-#      - opensearch-node2
       - database
     networks:
       - database-net
       - opensearch-net
     command: sirmordred -c /home/bitergia/conf/setup.cfg
+
+  hatstall:
+    image: grimoirelab/hatstall:latest
+    container_name: hatstall
+    volumes:
+      - ./config/hatstall/shdb.cfg:/home/grimoirelab/shdb.cfg
+      - ./config/hatstall/apache-hatstall.conf:/home/grimoirelab/apache-hatstall.conf
+      - hatstall:/db/
+    ports:
+      - 8001:80
+    environment:
+      - DATABASE_DIR=/db/
+      - ADMIN_USER=admin
+      - ADMIN_PASS=admin
+    networks:
+      - database-net
+  

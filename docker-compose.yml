@@ -2,10 +2,12 @@ version: '3'
 
 volumes:
   opensearch-node1:
-  opensearch-node2:
+#  opensearch-node2:
+  mysql:
 
 networks:
   opensearch-net:
+  database-net:
 
 services:
 
@@ -16,57 +18,95 @@ services:
       - 9200:9200
       - 9600:9600
     environment:
-      - cluster.name=opensearch-cluster
-      - node.name=opensearch-node1
-      - discovery.seed_hosts=opensearch-node1,opensearch-node2
-      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2
-      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
-      - bootstrap.system_call_filter=false # this is required to start up on macOS
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
-#        - network.host=0.0.0.0
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true         
+      - bootstrap.system_call_filter=false 
+      - "OPENSEARCH_JAVA_OPTS=-Xms2048m -Xmx2048m"
     ulimits:
       memlock:
         soft: -1
         hard: -1
       nofile:
-        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        soft: 65536
         hard: 65536
     volumes:
       - opensearch-node1:/usr/share/opensearch/data
     networks:
       - opensearch-net
 
-  opensearch-node2:
-    image: bitergia/bitergia-analytics-opensearch:latest
-    container_name: opensearch-node2
-    environment:
-      - cluster.name=opensearch-cluster
-      - node.name=opensearch-node2
-      - discovery.seed_hosts=opensearch-node1,opensearch-node2
-      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2
-      - bootstrap.memory_lock=true 
-      - bootstrap.system_call_filter=false # this is required to start up on macOS
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
-        hard: 65536
-    volumes:
-      - opensearch-node2:/usr/share/opensearch/data
-    networks:
-      - opensearch-net
+#  opensearch-node2:
+#    image: bitergia/bitergia-analytics-opensearch:latest
+#    container_name: opensearch-node2
+#    environment:
+#      - cluster.name=opensearch-cluster
+#      - node.name=opensearch-node2
+#      - discovery.seed_hosts=opensearch-node1,opensearch-node2
+#      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2
+#      # along with the memlock settings below, disables swapping
+#      - bootstrap.memory_lock=true 
+#      # this is required to start up on macOS
+#      - bootstrap.system_call_filter=false
+#      # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+#      - "OPENSEARCH_JAVA_OPTS=-Xms2048m -Xmx2048m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#      nofile:
+#        # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+#        soft: 65536
+#        hard: 65536
+#    volumes:
+#      - opensearch-node2:/usr/share/opensearch/data
+#    networks:
+#      - opensearch-net
 
   dashboard:
     image: bitergia/bitergia-analytics-opensearch-dashboards:latest
-    container_name: bap-dashboards
+    container_name: dashboard
     ports:
       - 5601:5601
     expose:
       - "5601"
     environment:
-      OPENSEARCH_HOSTS: '["https://opensearch-node1:9200","https://opensearch-node2:9200"]' # must be a string with no spaces when specified as an environment variable
+      # must be a string with no spaces when specified as an environment variable
+      OPENSEARCH_HOSTS: '["https://opensearch-node1:9200"]'
+      OPENSEARCH_USERNAME: admin
+      OPENSEARCH_PASSWORD: admin
     networks:
       - opensearch-net
+
+  database:
+    image: mariadb:10.0
+    container_name: database
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+    volumes:
+      - mysql:/var/lib/mysql
+    restart: "no"
+    networks:
+      - database-net
+
+  mordred:
+    restart: on-failure
+    image: bitergia/mordred:latest
+    volumes:
+      - ./config/mordred/setup.cfg:/home/bitergia/conf/setup.cfg
+      - ./config/mordred/menu.yaml:/home/bitergia/conf/menu.yaml
+      - ./config/mordred/aliases.json:/home/bitergia/conf/aliases.json
+      - ./config/mordred/projects.json:/home/bitergia/conf/projects.json
+      - ./config/mordred/organizations.json:/home/bitergia/conf/organizations.json
+      - ./logs/:/home/bitergia/logs
+    depends_on:
+      - opensearch-node1
+#      - opensearch-node2
+      - database
+    networks:
+      - database-net
+      - opensearch-net
+    command: sirmordred -c /home/bitergia/conf/setup.cfg

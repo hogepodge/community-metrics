@@ -1,0 +1,241 @@
+{
+    "metadashboard" : [
+      {
+        "name" : "Overview",
+        "title" : "Overview",
+        "description" : "Overview panel",
+        "type" : "entry",
+        "panel_id" : "Overview"
+      },
+      {
+        "name" : "Git",
+        "title" : "Git",
+        "description" : "",
+        "type" : "menu",
+        "dashboards" : [
+          {
+            "name" : "Overview",
+            "title" : "Overview",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Git"
+          },
+          {
+            "name" : "Attraction/Retention",
+            "title" : "Attraction/Retention",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Git-Demographics"
+          },
+          {
+            "name" : "Areas of code",
+            "title" : "Areas of code",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Git-Areas-of-Code"
+          },
+          {
+            "name" : "Lifecycle",
+            "title" : "Lifecycle",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Lifecycle"
+          }
+        ]
+      },
+      {
+        "name" : "GitHub Issues",
+        "title" : "GitHub Issues",
+        "description" : "",
+        "type" : "menu",
+        "dashboards" : [
+          {
+            "name" : "Overview",
+            "title" : "Overview",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "GitHub-Issues"
+          },
+          {
+            "name" : "Backlog",
+            "title" : "Backlog",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "GitHub-Issues-Backlog"
+          },
+          {
+            "name" : "Timing",
+            "title" : "Timing",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "GitHub-Issues-Timing"
+          },
+          {
+            "name" : "Efficiency",
+            "title" : "Efficiency",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "GitHub-Issues-Efficiency"
+          },
+          {
+            "name" : "Comments",
+            "title" : "Comments",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Github2-Issues-Comments-Collaboration"
+          }
+        ]
+      },
+      {
+        "name" : "GitHub PRs",
+        "title" : "GitHub PRs",
+        "description" : "",
+        "type" : "menu",
+        "dashboards" : [
+          {
+            "name" : "Overview",
+            "title" : "Overview",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "GitHub-Pull-Requests"
+          },
+          {
+            "name" : "Backlog",
+            "title" : "Backlog",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "GitHub-Pull-Requests-Backlog"
+          },
+          {
+            "name" : "Timing",
+            "title" : "Timing",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "GitHub-Pull-Requests-Timing"
+          },
+          {
+            "name" : "Efficiency",
+            "title" : "Efficiency",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "GitHub-Pull-Requests-Efficiency"
+          },
+          {
+            "name" : "Comments",
+            "title" : "Comments",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Github2-Pull-Requests-Comments-Collaboration"
+          }
+        ]
+      },
+      {
+        "name" : "GitHub Repositories",
+        "title" : "GitHub Repositories",
+        "description" : "",
+        "type" : "menu",
+        "dashboards" : [
+          {
+            "name" : "Overview",
+            "title" : "Overview",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "GitHub-Repositories"
+          }
+        ]
+      },
+      {
+        "name" : "Community",
+        "title" : "Community",
+        "description" : "",
+        "type" : "menu",
+        "dashboards" : [
+          {
+            "name" : "Overall",
+            "title" : "Overall",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Overall-Community-Structure"
+          },
+          {
+            "name" : "Projects",
+            "title" : "Projects",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Community-Structure-by-Project"
+          },
+          {
+            "name" : "Organizations",
+            "title" : "Organizations",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Community-Structure-by-Organization"
+          },
+          {
+            "name" : "Demographics",
+            "title" : "Demographics",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Demographics"
+          },
+          {
+            "name" : "Affiliations",
+            "title" : "Affiliations",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Affiliations"
+          },
+          {
+            "name" : "Contributors Growth",
+            "title" : "Contributors Growth",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Contributors-Growth"
+          },
+          {
+            "name" : "Organization Diversity",
+            "title" : "Organization Diversity",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "ab68fe20-17f2-11e9-872f-e17019e68d6d"
+          },
+          {
+            "name" : "Organization Diversity by Domains",
+            "title" : "Organization Diversity by Domains",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "6e0e2900-18c0-11e9-872f-e17019e68d6d"
+          },
+          {
+            "name" : "Engagement",
+            "title" : "Engagement",
+            "description" : "",
+            "type" : "entry",
+            "panel_id" : "Engagement"
+          }
+        ]
+      },
+      {
+        "name" : "Data Status",
+        "title" : "Data Status",
+        "description" : "Data Status panel",
+        "type" : "entry",
+        "panel_id" : "Data-Status"
+      },
+      {
+        "name" : "About",
+        "title" : "About",
+        "description" : "About menu",
+        "type" : "menu",
+        "dashboards" : [
+          {
+            "name" : "About the dashboard",
+            "title" : "About the dashboard",
+            "description" : "Panel with information about the usage of the interfaces, an information about the                                     panel itself and acknowledgments",
+            "type" : "entry",
+            "panel_id" : "About"
+          }
+        ]
+      }
+    ]
+  }

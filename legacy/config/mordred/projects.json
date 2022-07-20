@@ -1,0 +1,19 @@
+{
+  "LineaLabs": {
+    "git": [
+      "https://github.com/LineaLabs/lineapy"
+    ],
+    "github:issue": [
+      "https://github.com/LineaLabs/lineapy"
+    ],
+    "github": [
+      "https://github.com/LineaLabs/lineapy"
+    ],
+    "github:pull": [
+      "https://github.com/LineaLabs/lineapy"
+    ],
+    "github:repo": [
+      "https://github.com/LineaLabs/lineapy"
+    ]
+  }
+}

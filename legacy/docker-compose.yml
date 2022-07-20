@@ -1,0 +1,82 @@
+version: '2'
+
+volumes:
+    mysql:
+    hatstall:
+    elasticsearch:
+
+services:
+    mariadb:
+      image: mariadb:10.0
+      expose:
+        - "3306"
+      environment:
+        - MYSQL_ALLOW_EMPTY_PASSWORD=no
+        - MYSQL_ROOT_PASSWORD
+      volumes:
+        - mysql:/var/lib/mysql
+      restart: "no"
+
+    hatstall:
+      image: grimoirelab/hatstall:latest
+      environment:
+        - ADMIN_USER=admin
+        - ADMIN_PASS
+        - MYSQL_ROOT_PASSWORD
+      ports:
+          - 8000:8000
+      links:
+        - mariadb
+      volumes:
+        - ./config/hatstall/apache-hatstall.conf:/home/grimoirelab/apache-hatstall.conf
+        - ./config/hatstall/shdb.cfg:/home/grimoirelab/shdb.tmpl
+        - ./config/hatstall/entry.sh:/home/grimoirelab/entry.sh
+        - ./letsencrypt/etc:/etc/letsencrypt
+        - hatstall:/db
+      command: /home/grimoirelab/entry.sh
+
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.6
+      command: elasticsearch -Enetwork.bind_host=0.0.0.0 -Ehttp.max_content_length=2000mb -Ebootstrap.system_call_filter=false -Ediscovery.type=single-node
+      ports:
+        - 9200:9200
+      environment:
+        - ES_JAVA_OPTS=-Xms2g -Xmx2g
+        - discovery.type=single-node
+        - bootstrap.system_call_filter=false
+      volumes:
+        - elasticsearch:/usr/share/elasticsearch/data
+
+    kibiter:
+      restart: on-failure
+      image: bitergia/kibiter:community-v6.8.6-3
+      environment:
+        - PROJECT_NAME=Demo
+        - NODE_OPTIONS=--max-old-space-size=1000
+        - ELASTICSEARCH_URL=http://elasticsearch:9200
+      links:
+        - elasticsearch
+      ports:
+        - 5601:5601
+
+    mordred:
+      restart: on-failure
+      image: bitergia/mordred:grimoirelab-0.2.68
+      volumes:
+        - ./config/mordred/setup.cfg:/home/bitergia/conf/setup.cfg.tmpl
+        - ./config/mordred/secrets.cfg:/home/bitergia/conf/secrets.cfg
+        - ./config/mordred/aliases.json:/home/bitergia/conf/aliases.json
+        - ./config/mordred/projects.json:/home/bitergia/conf/projects.json
+        - ./config/mordred/organizations.json:/home/bitergia/conf/organizations.json
+        - ./config/mordred/identities.yml:/home/bitergia/conf/identities.yml
+        - ./config/mordred/entry.sh:/home/bitergia/entry.sh
+        - ./logs/:/home/bitergia/logs
+      depends_on:
+        - mariadb
+        - elasticsearch
+      mem_limit: 4g
+      environment:
+        - GITHUB_API_TOKEN
+        - SORTINGHAT_PASSWORD
+        - MYSQL_ROOT_PASSWORD
+      command: /home/bitergia/entry.sh
